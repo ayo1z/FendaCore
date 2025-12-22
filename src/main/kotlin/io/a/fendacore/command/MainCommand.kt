@@ -11,7 +11,7 @@ import taboolib.platform.util.onlinePlayers
 import java.io.File
 import java.time.LocalDateTime
 
-@CommandHeader(name = "fendacore", permission = "fendacore.command")
+@CommandHeader(name = "fendacore", permission = "fendacore.use")
 object MainCommand {
 
     @CommandBody
@@ -19,7 +19,7 @@ object MainCommand {
         createHelper()
     }
 
-    @CommandBody(permissionDefault = PermissionDefault.OP)
+    @CommandBody(permission = "fendacore.admin.reload")
     val reload = subCommand {
         execute<CommandSender> { sender, _, _ ->
             Language.reload()
@@ -27,28 +27,31 @@ object MainCommand {
         }
     }
 
-    @CommandBody(permissionDefault = PermissionDefault.OP)
+    @CommandBody(permission = "fendacore.admin.expansion")
     val expansion = subCommand {
         literal("报告") {
             execute<CommandSender> { _, _, _ ->
                 val players = onlinePlayers
 
-                console().sendMessage("§f当前时间: §e${LocalDateTime.now().toChineseDateTime()} §f在线玩家数: §e${onlinePlayers.size}")
-
                 if (players.isEmpty()) {
                     return@execute
                 }
 
-                players.forEach {
-                    val loc = it.location
-                    val world = loc.world?.name ?: "未知世界"
+                console().sendMessage("§7")
+                console().sendMessage("§f当前时间: §e${LocalDateTime.now().toChineseDateTime()}")
+                console().sendMessage("§7")
+                players.forEachIndexed { index, player ->
+                    val loc = player.location
 
-                    console().sendMessage("§7- §e${it.name} §7[${world}] §fx:${loc.x}, y:${loc.y}, z:${loc.z}")
+                    console().sendMessage(
+                        "§7${index + 1}§8. §b${player.name} §7| §b${loc.world?.name ?: "未知世界"} §7| §f${loc.x}, ${loc.y}, ${loc.z}"
+                    )
                 }
+                console().sendMessage("§7")
             }
         }
 
-        literal("删除") {
+        literal("清理") {
             execute<CommandSender> { _, _, _ ->
                 var count = 0
 
@@ -59,11 +62,12 @@ object MainCommand {
                     }
                 }
 
-                console().sendMessage("§f已删除 $count 个玩家的名字配置文件")
+                console().sendMessage("§f已清理 §e$count §f个在线玩家的名字YAML文件")
             }
         }
     }
 
+    @CommandBody
     val birthday = subCommand {
 
     }
