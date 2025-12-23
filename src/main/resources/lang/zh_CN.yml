@@ -1,2 +1,2 @@
 command-prefix: '&{#00C3FF}ғ&{#1AC8F2}ᴇ&{#33CDE6}ɴ&{#4DD2D9}ᴅ&{#66D7CD}ᴀ&{#80DCBF}ᴄ&{#99E1B2}ᴏ&{#B3E6A6}ʀ&{#CCEB99}ᴇ &{#FFFFFF}'
-command-reload: '重新载入配置文件'
+command-reload: '重新载入配置文件 耗时 {0} ms'

@@ -1,15 +1,19 @@
 package io.a.fendacore.command
 
+import io.a.fendacore.FendaCorePlugin
 import io.a.fendacore.util.sendPrefixedLang
-import io.a.fendacore.util.toChineseDateTime
 import org.bukkit.command.CommandSender
-import taboolib.common.platform.command.*
+import taboolib.common.platform.command.CommandBody
+import taboolib.common.platform.command.CommandHeader
+import taboolib.common.platform.command.mainCommand
+import taboolib.common.platform.command.subCommand
 import taboolib.common.platform.function.console
 import taboolib.expansion.createHelper
 import taboolib.module.lang.Language
 import taboolib.platform.util.onlinePlayers
 import java.io.File
 import java.time.LocalDateTime
+import kotlin.time.measureTime
 
 @CommandHeader(name = "fendacore", permission = "fendacore.use")
 object MainCommand {
@@ -19,16 +23,19 @@ object MainCommand {
         createHelper()
     }
 
-    @CommandBody(permission = "fendacore.admin.reload")
-    val reload = subCommand {
-        execute<CommandSender> { sender, _, _ ->
-            Language.reload()
-            sender.sendPrefixedLang("command-reload")
+    @CommandBody(permission = "fendacore.admin")
+    val admin = subCommand {
+        literal("重载") {
+            execute<CommandSender> { sender, _, _ ->
+                measureTime {
+                    Language.reload()
+                    FendaCorePlugin.config.reload()
+                }.inWholeMilliseconds.also {
+                    sender.sendPrefixedLang("command-reload", it)
+                }
+            }
         }
-    }
 
-    @CommandBody(permission = "fendacore.admin.expansion")
-    val expansion = subCommand {
         literal("报告") {
             execute<CommandSender> { _, _, _ ->
                 val players = onlinePlayers
@@ -38,7 +45,7 @@ object MainCommand {
                 }
 
                 console().sendMessage("§7")
-                console().sendMessage("§f当前时间: §e${LocalDateTime.now().toChineseDateTime()}")
+                console().sendMessage("§f当前时间: §e${LocalDateTime.now()}")
                 console().sendMessage("§7")
                 players.forEachIndexed { index, player ->
                     val loc = player.location
@@ -69,6 +76,10 @@ object MainCommand {
 
     @CommandBody
     val birthday = subCommand {
+        literal("设置") {
+            execute<CommandSender> { sender, _, _ ->
 
+            }
+        }
     }
 }
